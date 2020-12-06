@@ -1,0 +1,59 @@
+class Solution {
+private:
+    void check(vector<vector<int>>& grid, int x, int y, int day) {
+        if(x < 0 || x >= grid.size() || y < 0 || y >= grid[0].size() || grid[x][y] == 0) {
+            return;
+        }
+        
+        if(grid[x][y] == 1) {
+            grid[x][y] = day + 1;
+            rotten.push({x, y});
+        }
+        else {
+            if(grid[x][y] > day + 1) {
+                grid[x][y] = day + 1;
+                rotten.push({x,y});
+            }
+        } 
+    }
+public:
+    queue<pair<int,int>> rotten;
+    int orangesRotting(vector<vector<int>>& grid) {
+        const int n = grid.size();
+        const int m = grid[0].size();
+        int res = 0;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 2) rotten.push({i,j});
+            }
+        }
+        
+        while(!rotten.empty()) {
+            int x = rotten.front().first;
+            int y = rotten.front().second;
+            int day = grid[x][y];
+            rotten.pop();
+            check(grid, x+1, y, day);
+            check(grid, x-1, y, day);
+            check(grid, x, y+1, day);
+            check(grid, x, y-1, day);
+        }
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 1) return -1;
+                else {
+                    if(grid[i][j] > 2) {
+                        res = max(res, grid[i][j]-2);
+                    }
+                }
+                // cout << grid[i][j] << " ";
+            }
+            // cout << endl;
+        }
+        
+        return res;
+    }
+};
+ 
